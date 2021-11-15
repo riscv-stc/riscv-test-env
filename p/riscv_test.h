@@ -161,6 +161,7 @@
         beq t2, t3, 3f;                                                 \
         la t0, begin_signature;                                         \
         la t1, end_signature;                                           \
+        addi t1, t1, 0x40;                                              \
         li t2, 0x2010000;                                               \
 4:      sd t0, 0x200(t2);                                               \
         addi t0, t0, 64;                                                \
