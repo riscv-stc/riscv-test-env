@@ -160,6 +160,8 @@
         li t3, 5;                                                       \
         beq t2, t3, 3f;                                                 \
         la t0, begin_signature;                                         \
+        srli t0, t0, 6;                                                 \
+        slli t0, t0, 6;                                                 \
         la t1, end_signature;                                           \
         addi t1, t1, 0x40;                                              \
         li t2, 0x2010000;                                               \
