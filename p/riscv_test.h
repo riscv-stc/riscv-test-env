@@ -155,6 +155,21 @@
 
 #define INTERRUPT_HANDLER j other_exception /* No interrupts should occur */
 
+#define RVTEST_FLUSH_L2                                                 \
+        csrr t2, marchid;;                                              \
+        li t3, 5;                                                       \
+        beq t2, t3, 3f;                                                 \
+        la t0, begin_signature;                                         \
+        srli t0, t0, 6;                                                 \
+        slli t0, t0, 6;                                                 \
+        la t1, end_signature;                                           \
+        addi t1, t1, 0x40;                                              \
+        li t2, 0x2010000;                                               \
+4:      sd t0, 0x200(t2);                                               \
+        addi t0, t0, 64;                                                \
+        blt t0, t1, 4b;                                                 \
+3:      nop;
+
 #define RVTEST_CODE_BEGIN                                               \
         .section .text.init;                                            \
         .align  6;                                                      \
@@ -188,6 +203,7 @@ handle_exception:                                                       \
         /* some unhandlable exception occurred */                       \
   1:    ori TESTNUM, TESTNUM, 1337;                                     \
   write_tohost:                                                         \
+        RVTEST_FLUSH_L2;                                                \
         sw TESTNUM, tohost, t5;                                         \
         j write_tohost;                                                 \
 reset_vector:                                                           \
